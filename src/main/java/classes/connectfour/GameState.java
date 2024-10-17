@@ -4,13 +4,13 @@ public class GameState {
     private final Board board;
     private final String player1;
     private final String player2;
-    private int currentPlayer;  // 0: sárga, 1: piros
+    private int currentPlayer;
 
     public GameState(Board board, String player1, String player2) {
         this.board = board;
         this.player1 = player1;
         this.player2 = player2;
-        this.currentPlayer = 0;  // Sárga játékos kezd
+        this.currentPlayer = 0;
     }
 
     public String getCurrentPlayerName() {

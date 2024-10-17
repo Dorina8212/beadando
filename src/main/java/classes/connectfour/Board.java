@@ -30,10 +30,10 @@ public class Board {
     }
 
     public boolean checkWin(Position position, Disc disc) {
-        return checkLine(position, disc, 0, 1) ||  // horizontális
-                checkLine(position, disc, 1, 0) ||  // vertikális
-                checkLine(position, disc, 1, 1) ||  // átlós (jobbra-le)
-                checkLine(position, disc, 1, -1);   // átlós (balra-le)
+        return checkLine(position, disc, 0, 1) ||
+                checkLine(position, disc, 1, 0) ||
+                checkLine(position, disc, 1, 1) ||
+                checkLine(position, disc, 1, -1);
     }
 
     private boolean checkLine(Position start, Disc disc, int rowDir, int colDir) {

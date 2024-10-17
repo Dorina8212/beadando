@@ -47,12 +47,12 @@ public class Main {
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
                 if (grid[row][col] == null) {
-                    System.out.print("- ");  // Empty spot
+                    System.out.print("- ");
                 } else {
-                    System.out.print(grid[row][col] + " ");  // Print disc (Yellow or Red)
+                    System.out.print(grid[row][col] + " ");
                 }
             }
-            System.out.println();  // Newline after each row
+            System.out.println();
         }
     }
 }
