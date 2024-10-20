@@ -29,20 +29,17 @@ public class Main {
 
             Position position = gameState.dropDisc(col);
 
-            // Check for a win
             if (gameState.isWinningMove(position)) {
                 displayBoard(board.getGrid());
                 System.out.println("Congratulations " + gameState.getCurrentPlayerName() + ", you win!");
                 break;
             }
 
-            // Switch players
             gameState.switchPlayer();
         }
 
         scanner.close();
     }
-    // Method to display the grid
     public static void displayBoard(Disc[][] grid) {
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
