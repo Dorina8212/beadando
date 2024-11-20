@@ -19,12 +19,26 @@ public class Main {
         while (true) {
             displayBoard(board.getGrid());
             System.out.println(gameState.getCurrentPlayerName() + "'s turn (" + gameState.getCurrentDisc() + ")");
-            System.out.print("Choose a column (0-6): ");
-            int col = scanner.nextInt();
 
-            if (board.isColumnFull(col)) {
-                System.out.println("Column is full! Choose another.");
-                continue;
+            int col = -1; // Kezdetben érvénytelen oszlopszám
+            while (true) {
+                System.out.print("Choose a column (0-6): ");
+                if (scanner.hasNextInt()) {
+                    col = scanner.nextInt();
+                    if (col >= 0 && col < 7) {
+                        // Érvényes oszlopszám
+                        if (!board.isColumnFull(col)) {
+                            break; // Kilépünk a ciklusból, ha az oszlop nem telített
+                        } else {
+                            System.out.println("Column is full! Choose another.");
+                        }
+                    } else {
+                        System.out.println("Invalid column! Choose a number between 0 and 6.");
+                    }
+                } else {
+                    System.out.println("Invalid input! Please enter a number between 0 and 6.");
+                    scanner.next(); // Töröljük a hibás bemenetet
+                }
             }
 
             Position position = gameState.dropDisc(col);
@@ -40,6 +54,7 @@ public class Main {
 
         scanner.close();
     }
+
     public static void displayBoard(Disc[][] grid) {
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
@@ -53,4 +68,3 @@ public class Main {
         }
     }
 }
-
