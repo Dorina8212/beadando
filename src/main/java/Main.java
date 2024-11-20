@@ -8,7 +8,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Board board = new Board(6, 7);
+
+        // Játék inicializálása
+        Board board = new Board(6, 7); // 6 sor, 7 oszlop
         System.out.print("Enter name for player 1 (Yellow): ");
         String player1 = scanner.nextLine();
         System.out.print("Enter name for player 2 (Red): ");
@@ -16,45 +18,49 @@ public class Main {
 
         GameState gameState = new GameState(board, player1, player2);
 
+        // Fő játékmenet
         while (true) {
             displayBoard(board.getGrid());
             System.out.println(gameState.getCurrentPlayerName() + "'s turn (" + gameState.getCurrentDisc() + ")");
+            int col = -1;
 
-            int col = -1; // Kezdetben érvénytelen oszlopszám
+            // Bemenet ellenőrzése
             while (true) {
-                System.out.print("Choose a column (0-6): ");
+                System.out.print("Choose a column (0-" + (board.getColumns() - 1) + "): ");
                 if (scanner.hasNextInt()) {
                     col = scanner.nextInt();
-                    if (col >= 0 && col < 7) {
-                        // Érvényes oszlopszám
-                        if (!board.isColumnFull(col)) {
-                            break; // Kilépünk a ciklusból, ha az oszlop nem telített
-                        } else {
+                    if (col >= 0 && col < board.getColumns()) { // Tartományellenőrzés
+                        if (board.isColumnFull(col)) {
                             System.out.println("Column is full! Choose another.");
+                        } else {
+                            break; // Érvényes oszlop
                         }
                     } else {
-                        System.out.println("Invalid column! Choose a number between 0 and 6.");
+                        System.out.println("Invalid column! Choose a number between 0 and " + (board.getColumns() - 1) + ".");
                     }
                 } else {
-                    System.out.println("Invalid input! Please enter a number between 0 and 6.");
-                    scanner.next(); // Töröljük a hibás bemenetet
+                    System.out.println("Invalid input! Please enter a number.");
+                    scanner.next(); // Hibás bemenet törlése
                 }
             }
 
+            // Korong ejtése és játékállapot ellenőrzése
             Position position = gameState.dropDisc(col);
-
             if (gameState.isWinningMove(position)) {
                 displayBoard(board.getGrid());
                 System.out.println("Congratulations " + gameState.getCurrentPlayerName() + ", you win!");
                 break;
             }
 
+            // Játékos váltása
             gameState.switchPlayer();
         }
 
+        // Scanner bezárása
         scanner.close();
     }
 
+    // Tábla kirajzolása
     public static void displayBoard(Disc[][] grid) {
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
