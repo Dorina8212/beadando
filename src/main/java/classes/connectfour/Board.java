@@ -60,4 +60,8 @@ public class Board {
     public int getColumns() {
         return cols;
     }
+
+    public int getRows() {
+        return 0;
+    }
 }
