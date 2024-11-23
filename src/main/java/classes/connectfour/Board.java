@@ -54,13 +54,10 @@ public class Board {
         return count;
     }
 
-
     public Disc[][] getGrid() {
         return grid;
     }
     public int getColumns() {
         return cols;
     }
-
 }
-

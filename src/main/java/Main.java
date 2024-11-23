@@ -9,7 +9,6 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-
         Board board = new Board(6, 7); // 6 sor, 7 oszlop
         System.out.print("Enter name for player 1 (Yellow): ");
         String player1 = scanner.nextLine();
@@ -18,12 +17,10 @@ public class Main {
 
         GameState gameState = new GameState(board, player1, player2);
 
-
         while (true) {
             displayBoard(board.getGrid());
             System.out.println(gameState.getCurrentPlayerName() + "'s turn (" + gameState.getCurrentDisc() + ")");
             int col = -1;
-
 
             while (true) {
                 System.out.print("Choose a column (0-" + (board.getColumns() - 1) + "): ");
@@ -44,7 +41,6 @@ public class Main {
                 }
             }
 
-
             Position position = gameState.dropDisc(col);
             if (gameState.isWinningMove(position)) {
                 displayBoard(board.getGrid());
@@ -52,14 +48,11 @@ public class Main {
                 break;
             }
 
-
             gameState.switchPlayer();
         }
 
-
         scanner.close();
     }
-
 
     public static void displayBoard(Disc[][] grid) {
         for (int row = 0; row < grid.length; row++) {
