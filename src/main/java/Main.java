@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Játék inicializálása
+
         Board board = new Board(6, 7); // 6 sor, 7 oszlop
         System.out.print("Enter name for player 1 (Yellow): ");
         String player1 = scanner.nextLine();
@@ -18,33 +18,33 @@ public class Main {
 
         GameState gameState = new GameState(board, player1, player2);
 
-        // Fő játékmenet
+
         while (true) {
             displayBoard(board.getGrid());
             System.out.println(gameState.getCurrentPlayerName() + "'s turn (" + gameState.getCurrentDisc() + ")");
             int col = -1;
 
-            // Bemenet ellenőrzése
+
             while (true) {
                 System.out.print("Choose a column (0-" + (board.getColumns() - 1) + "): ");
                 if (scanner.hasNextInt()) {
                     col = scanner.nextInt();
-                    if (col >= 0 && col < board.getColumns()) { // Tartományellenőrzés
+                    if (col >= 0 && col < board.getColumns()) {
                         if (board.isColumnFull(col)) {
                             System.out.println("Column is full! Choose another.");
                         } else {
-                            break; // Érvényes oszlop
+                            break;
                         }
                     } else {
                         System.out.println("Invalid column! Choose a number between 0 and " + (board.getColumns() - 1) + ".");
                     }
                 } else {
                     System.out.println("Invalid input! Please enter a number.");
-                    scanner.next(); // Hibás bemenet törlése
+                    scanner.next();
                 }
             }
 
-            // Korong ejtése és játékállapot ellenőrzése
+
             Position position = gameState.dropDisc(col);
             if (gameState.isWinningMove(position)) {
                 displayBoard(board.getGrid());
@@ -52,15 +52,15 @@ public class Main {
                 break;
             }
 
-            // Játékos váltása
+
             gameState.switchPlayer();
         }
 
-        // Scanner bezárása
+
         scanner.close();
     }
 
-    // Tábla kirajzolása
+
     public static void displayBoard(Disc[][] grid) {
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
