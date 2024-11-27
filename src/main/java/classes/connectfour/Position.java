@@ -2,7 +2,7 @@ package classes.connectfour;
 
 import java.util.Objects;
 
-public final class Position {
+public class Position {
     private final int row;
     private final int col;
 
@@ -32,4 +32,3 @@ public final class Position {
         return Objects.hash(row, col);
     }
 }
-

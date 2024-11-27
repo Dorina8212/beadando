@@ -1,5 +1,8 @@
 package classes.connectfour;
 
+import classes.connectfour.Disc;
+import classes.connectfour.Position;
+
 public class Board {
     private final int rows;
     private final int cols;
@@ -30,10 +33,10 @@ public class Board {
     }
 
     public boolean checkWin(Position position, Disc disc) {
-        return checkLine(position, disc, 0, 1) ||
-                checkLine(position, disc, 1, 0) ||
-                checkLine(position, disc, 1, 1) ||
-                checkLine(position, disc, 1, -1);
+        return checkLine(position, disc, 0, 1) ||   // Horizontal
+                checkLine(position, disc, 1, 0) ||   // Vertical
+                checkLine(position, disc, 1, 1) ||   // Diagonal \
+                checkLine(position, disc, 1, -1);    // Diagonal /
     }
 
     private boolean checkLine(Position start, Disc disc, int rowDir, int colDir) {
@@ -57,11 +60,12 @@ public class Board {
     public Disc[][] getGrid() {
         return grid;
     }
+
     public int getColumns() {
         return cols;
     }
 
     public int getRows() {
-        return 0;
+        return rows;
     }
 }

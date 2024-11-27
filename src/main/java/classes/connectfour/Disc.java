@@ -1,6 +1,5 @@
 package classes.connectfour;
 
-
 public enum Disc {
     YELLOW("Y"),
     RED("R");
