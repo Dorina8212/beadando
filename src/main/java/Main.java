@@ -1,4 +1,6 @@
-package classes.connectfour;
+import classes.connectfour.Board;
+import classes.connectfour.GameState;
+import classes.connectfour.Position;
 
 import java.util.Scanner;
 
