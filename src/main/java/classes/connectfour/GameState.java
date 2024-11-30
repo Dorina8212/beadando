@@ -1,10 +1,8 @@
 package classes.connectfour;
 
-import classes.connectfour.Board;
-import classes.connectfour.Disc;
-import classes.connectfour.Position;
-
+import java.io.*;
 import java.util.Random;
+import java.util.Scanner;
 
 public class GameState {
     public final Board board;
@@ -69,4 +67,44 @@ public class GameState {
     public String getWinner() {
         return winner;
     }
+
+    public static void saveBoardState(Board board, String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for (int row = 0; row < board.getRows(); row++) {
+                for (int col = 0; col < board.getColumns(); col++) {
+                    Disc disc = board.getGrid()[row][col];
+                    writer.write(disc == null ? "-" : (disc == Disc.YELLOW ? "Y" : "R"));
+                    writer.write(" ");
+                }
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static GameState loadGameState(String filename) {
+        try (Scanner scanner = new Scanner(new File(filename))) {
+            Board board = new Board(6, 7);  // Create an empty board
+
+            int row = 0;
+            while (scanner.hasNextLine() && row < 6) {
+                String line = scanner.nextLine();
+                String[] tokens = line.split(" ");
+                for (int col = 0; col < tokens.length; col++) {
+                    if ("Y".equals(tokens[col])) {
+                        board.getGrid()[row][col] = Disc.YELLOW;
+                    } else if ("R".equals(tokens[col])) {
+                        board.getGrid()[row][col] = Disc.RED;
+                    }
+                }
+                row++;
+            }
+
+            return new GameState(board, "Player 1", "Player 2", true, true);  // Default players and AI status
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+    }
+
 }

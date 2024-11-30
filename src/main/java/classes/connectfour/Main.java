@@ -1,31 +1,59 @@
 package classes.connectfour;
 
-import classes.connectfour.Board;
-import classes.connectfour.Disc;
-import classes.connectfour.GameState;
-import classes.connectfour.Position;
-
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class Main {
+    private static final String STATS_FILE = "player_stats.txt";
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter name for player 1 (Yellow): ");
-        String player1 = scanner.nextLine();
-        System.out.print("Is player 1 human? (yes/no): ");
-        String isPlayer1Human = scanner.nextLine();
-        boolean player1Human = isPlayer1Human.equalsIgnoreCase("yes");
+        // List the saved game files in the current directory
+        File directory = new File(".");
+        File[] savedGames = directory.listFiles((dir, name) -> name.startsWith("game_state_") && name.endsWith(".txt"));
 
-        System.out.print("Enter name for player 2 (Red): ");
-        String player2 = scanner.nextLine();
-        System.out.print("Is player 2 human? (yes/no): ");
-        String isPlayer2Human = scanner.nextLine();
-        boolean player2Human = isPlayer2Human.equalsIgnoreCase("yes");
+        // Ask the user if they want to load a saved game
+        System.out.print("Do you want to load a saved game? (yes/no): ");
+        String loadSavedGameInput = scanner.nextLine();
+        GameState gameState;
 
-        Board board = new Board(6, 7);
-        GameState gameState = new GameState(board, player1, player2, player1Human, player2Human);
+        if (loadSavedGameInput.equalsIgnoreCase("yes")) {
+            // If there are saved games, show them
+            if (savedGames != null && savedGames.length > 0) {
+                System.out.println("Available saved games:");
+                for (int i = 0; i < savedGames.length; i++) {
+                    System.out.println(i + 1 + ". " + savedGames[i].getName());
+                }
 
+                System.out.print("Enter the number of the saved game you want to load: ");
+                int gameNumber = scanner.nextInt();
+                scanner.nextLine(); // Consume newline character
+
+                if (gameNumber >= 1 && gameNumber <= savedGames.length) {
+                    String selectedFile = savedGames[gameNumber - 1].getName();
+                    gameState = GameState.loadGameState(selectedFile);
+
+                    if (gameState == null) {
+                        System.out.println("Failed to load the selected game. Starting a new game.");
+                        gameState = startNewGame(scanner);
+                    }
+                } else {
+                    System.out.println("Invalid selection. Starting a new game.");
+                    gameState = startNewGame(scanner);
+                }
+            } else {
+                System.out.println("No saved games found. Starting a new game.");
+                gameState = startNewGame(scanner);
+            }
+        } else {
+            gameState = startNewGame(scanner);
+        }
+
+        // Game loop
         while (true) {
             displayBoard(gameState.board.getGrid());
             System.out.println(gameState.getCurrentPlayerName() + "'s turn (" + gameState.getCurrentDisc() + ")");
@@ -60,13 +88,51 @@ public class Main {
             if (gameState.isWinningMove(position)) {
                 displayBoard(gameState.board.getGrid());
                 System.out.println("Congratulations " + gameState.getCurrentPlayerName() + ", you win!");
+
+                // Update and save player stats
+                updatePlayerStats(gameState.getCurrentPlayerName());
+
+                // Ask if the user wants to save the game
+                System.out.print("Do you want to save the game? (yes/no): ");
+                scanner.nextLine(); // Consume newline character
+                String saveGameInput = scanner.nextLine();
+                if (saveGameInput.equalsIgnoreCase("yes")) {
+                    String newFileName = "game_state_" + UUID.randomUUID().toString() + ".txt";
+                    GameState.saveBoardState(gameState.board, newFileName);
+                    System.out.println("Game saved to file: " + newFileName);
+                }
+
                 break;
             }
 
             gameState.switchPlayer();
         }
 
+        // Ask if the user wants to display the high-score table
+        System.out.print("Do you want to see the high-score table? (yes/no): ");
+        String showHighScoreInput = scanner.nextLine();
+        if (showHighScoreInput.equalsIgnoreCase("yes")) {
+            displayHighScoreTable();
+        }
+
         scanner.close();
+    }
+
+    private static GameState startNewGame(Scanner scanner) {
+        System.out.print("Enter name for player 1 (Yellow): ");
+        String player1 = scanner.nextLine();
+        System.out.print("Is player 1 human? (yes/no): ");
+        String isPlayer1Human = scanner.nextLine();
+        boolean player1Human = isPlayer1Human.equalsIgnoreCase("yes");
+
+        System.out.print("Enter name for player 2 (Red): ");
+        String player2 = scanner.nextLine();
+        System.out.print("Is player 2 human? (yes/no): ");
+        String isPlayer2Human = scanner.nextLine();
+        boolean player2Human = isPlayer2Human.equalsIgnoreCase("yes");
+
+        Board board = new Board(6, 7);
+        return new GameState(board, player1, player2, player1Human, player2Human);
     }
 
     public static void displayBoard(Disc[][] grid) {
@@ -81,6 +147,58 @@ public class Main {
                 }
             }
             System.out.println();
+        }
+    }
+
+    // Method to update the player stats file
+    private static void updatePlayerStats(String playerName) {
+        Map<String, Integer> stats = loadPlayerStats();
+        stats.put(playerName, stats.getOrDefault(playerName, 0) + 1);
+        savePlayerStats(stats);
+    }
+
+    // Load player stats from the stats file
+    private static Map<String, Integer> loadPlayerStats() {
+        Map<String, Integer> stats = new HashMap<>();
+        File file = new File(STATS_FILE);
+
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(":");
+                    if (parts.length == 2) {
+                        stats.put(parts[0].trim(), Integer.parseInt(parts[1].trim()));
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println("Error reading stats file: " + e.getMessage());
+            }
+        }
+
+        return stats;
+    }
+
+    // Save player stats to the stats file
+    private static void savePlayerStats(Map<String, Integer> stats) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(STATS_FILE))) {
+            for (Map.Entry<String, Integer> entry : stats.entrySet()) {
+                writer.write(entry.getKey() + ": " + entry.getValue());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing to stats file: " + e.getMessage());
+        }
+    }
+
+    // Display the high-score table
+    private static void displayHighScoreTable() {
+        System.out.println("\n--- High Score Table ---");
+        Map<String, Integer> stats = loadPlayerStats();
+        if (stats.isEmpty()) {
+            System.out.println("No high scores available.");
+        } else {
+            stats.forEach((player, wins) -> System.out.println(player + ": " + wins + " wins"));
         }
     }
 }
