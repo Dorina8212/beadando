@@ -75,9 +75,9 @@ public class Main {
                 if (grid[row][col] == null) {
                     System.out.print("- ");
                 } else if (grid[row][col] == Disc.YELLOW) {
-                    System.out.print("O ");
+                    System.out.print("Y ");
                 } else if (grid[row][col] == Disc.RED) {
-                    System.out.print("X ");
+                    System.out.print("R ");
                 }
             }
             System.out.println();

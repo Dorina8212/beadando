@@ -4,62 +4,76 @@ import classes.connectfour.GameState;
 import classes.connectfour.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameStateTest {
-
     private GameState gameState;
     private Board board;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         board = new Board(6, 7);
-        gameState = new GameState(board, "Player1", "Player2");
+        gameState = new GameState(board, "Player 1", "AI", true, false);
     }
 
     @Test
-    public void testGetCurrentPlayerName() {
-        assertEquals("Player1", gameState.getCurrentPlayerName());
-        gameState.switchPlayer();
-        assertEquals("Player2", gameState.getCurrentPlayerName());
-    }
-
-    @Test
-    public void testGetCurrentDisc() {
+    void testInitialState() {
+        assertEquals("Player 1", gameState.getCurrentPlayerName());
         assertEquals(Disc.YELLOW, gameState.getCurrentDisc());
+        assertTrue(gameState.isPlayerHuman());
+    }
+
+    @Test
+    void testSwitchPlayer() {
         gameState.switchPlayer();
+        assertEquals("AI", gameState.getCurrentPlayerName());
         assertEquals(Disc.RED, gameState.getCurrentDisc());
+        assertFalse(gameState.isPlayerHuman());
     }
 
     @Test
-    public void testSwitchPlayer() {
-        assertEquals("Player1", gameState.getCurrentPlayerName());
-        gameState.switchPlayer();
-        assertEquals("Player2", gameState.getCurrentPlayerName());
-        gameState.switchPlayer();
-        assertEquals("Player1", gameState.getCurrentPlayerName());
-    }
-
-    @Test
-    public void testDropDisc() {
+    void testDropDisc() {
         Position position = gameState.dropDisc(0);
+        assertNotNull(position);
         assertEquals(5, position.getRow());
         assertEquals(0, position.getCol());
         assertEquals(Disc.YELLOW, board.getDisc(position));
-
-        gameState.switchPlayer();
-        position = gameState.dropDisc(0);
-        assertEquals(4, position.getRow());
-        assertEquals(0, position.getCol());
-        assertEquals(Disc.RED, board.getDisc(position));
     }
 
     @Test
-    public void testIsWinningMove() {
-        for (int col = 0; col < 4; col++) {
-            gameState.dropDisc(col);
+    void testIsWinningMove() {
+        // Create a winning vertical line for YELLOW
+        for (int i = 5; i >= 2; i--) {
+            board.dropDisc(0, Disc.YELLOW);
         }
-        Position lastMove = new Position(5, 3);
-        assertTrue(gameState.isWinningMove(lastMove));
+        Position winningPosition = gameState.dropDisc(0); // Fourth disc
+        assertTrue(gameState.isWinningMove(winningPosition));
+        assertEquals("Player 1", gameState.getWinner());
+    }
+
+    @Test
+    void testGetAIMove() {
+        // Fill column 0 to ensure AI avoids full columns
+        for (int i = 0; i < 6; i++) {
+            board.dropDisc(0, Disc.RED);
+        }
+        int aiMove = gameState.getAIMove();
+        assertTrue(aiMove >= 1 && aiMove < board.getColumns()); // Column 0 should be skipped
+        assertFalse(board.isColumnFull(aiMove));
+    }
+
+    @Test
+    void testAIPlaysCorrectly() {
+        gameState.switchPlayer(); // Switch to AI
+        assertFalse(gameState.isPlayerHuman());
+
+        int aiMove = gameState.getAIMove();
+        Position aiPosition = gameState.dropDisc(aiMove);
+
+        assertNotNull(aiPosition);
+        assertEquals(5, aiPosition.getRow());
+        assertEquals(Disc.RED, board.getDisc(aiPosition));
     }
 }
+
