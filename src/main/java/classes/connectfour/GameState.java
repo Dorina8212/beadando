@@ -8,8 +8,8 @@ public class GameState {
     public final Board board;
     private final String player1;
     private final String player2;
-    private final boolean isPlayer1Human;
-    private final boolean isPlayer2Human;
+    private final boolean isPlayer1Human;  // Player 1 is human or AI
+    private final boolean isPlayer2Human;  // Player 2 is human or AI
     private int currentPlayer;
     private String winner;
 
@@ -19,7 +19,7 @@ public class GameState {
         this.player2 = player2;
         this.isPlayer1Human = isPlayer1Human;
         this.isPlayer2Human = isPlayer2Human;
-        this.currentPlayer = 0;
+        this.currentPlayer = 0;  // Player 1 starts
         this.winner = null;
     }
 
@@ -85,7 +85,7 @@ public class GameState {
 
     public static GameState loadGameState(String filename) {
         try (Scanner scanner = new Scanner(new File(filename))) {
-            Board board = new Board(6, 7);
+            Board board = new Board(6, 7);  // Create an empty board
 
             int row = 0;
             while (scanner.hasNextLine() && row < 6) {
@@ -101,7 +101,7 @@ public class GameState {
                 row++;
             }
 
-            return new GameState(board, "Player 1", "Player 2", true, true);
+            return new GameState(board, "Player 1", "Player 2", true, true);  // Default players and AI status
         } catch (FileNotFoundException e) {
             return null;
         }
