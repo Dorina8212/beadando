@@ -12,17 +12,16 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // List the saved game files in the current directory
+
         File directory = new File(".");
         File[] savedGames = directory.listFiles((dir, name) -> name.startsWith("game_state_") && name.endsWith(".txt"));
 
-        // Ask the user if they want to load a saved game
+
         System.out.print("Do you want to load a saved game? (yes/no): ");
         String loadSavedGameInput = scanner.nextLine();
         GameState gameState;
 
         if (loadSavedGameInput.equalsIgnoreCase("yes")) {
-            // If there are saved games, show them
             if (savedGames != null && savedGames.length > 0) {
                 System.out.println("Available saved games:");
                 for (int i = 0; i < savedGames.length; i++) {
@@ -31,7 +30,7 @@ public class Main {
 
                 System.out.print("Enter the number of the saved game you want to load: ");
                 int gameNumber = scanner.nextInt();
-                scanner.nextLine(); // Consume newline character
+                scanner.nextLine();
 
                 if (gameNumber >= 1 && gameNumber <= savedGames.length) {
                     String selectedFile = savedGames[gameNumber - 1].getName();
@@ -53,7 +52,7 @@ public class Main {
             gameState = startNewGame(scanner);
         }
 
-        // Game loop
+
         while (true) {
             displayBoard(gameState.board.getGrid());
             System.out.println(gameState.getCurrentPlayerName() + "'s turn (" + gameState.getCurrentDisc() + ")");
@@ -79,7 +78,7 @@ public class Main {
                     }
                 }
             } else {
-                // AI move
+
                 col = gameState.getAIMove();
                 System.out.println("AI chose column: " + col);
             }
@@ -89,12 +88,12 @@ public class Main {
                 displayBoard(gameState.board.getGrid());
                 System.out.println("Congratulations " + gameState.getCurrentPlayerName() + ", you win!");
 
-                // Update and save player stats
+
                 updatePlayerStats(gameState.getCurrentPlayerName());
 
-                // Ask if the user wants to save the game
+
                 System.out.print("Do you want to save the game? (yes/no): ");
-                scanner.nextLine(); // Consume newline character
+                scanner.nextLine();
                 String saveGameInput = scanner.nextLine();
                 if (saveGameInput.equalsIgnoreCase("yes")) {
                     String newFileName = "game_state_" + UUID.randomUUID().toString() + ".txt";
@@ -108,7 +107,7 @@ public class Main {
             gameState.switchPlayer();
         }
 
-        // Ask if the user wants to display the high-score table
+
         System.out.print("Do you want to see the high-score table? (yes/no): ");
         String showHighScoreInput = scanner.nextLine();
         if (showHighScoreInput.equalsIgnoreCase("yes")) {
@@ -150,14 +149,12 @@ public class Main {
         }
     }
 
-    // Method to update the player stats file
     private static void updatePlayerStats(String playerName) {
         Map<String, Integer> stats = loadPlayerStats();
         stats.put(playerName, stats.getOrDefault(playerName, 0) + 1);
         savePlayerStats(stats);
     }
 
-    // Load player stats from the stats file
     private static Map<String, Integer> loadPlayerStats() {
         Map<String, Integer> stats = new HashMap<>();
         File file = new File(STATS_FILE);
@@ -179,7 +176,7 @@ public class Main {
         return stats;
     }
 
-    // Save player stats to the stats file
+
     private static void savePlayerStats(Map<String, Integer> stats) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(STATS_FILE))) {
             for (Map.Entry<String, Integer> entry : stats.entrySet()) {
@@ -191,7 +188,7 @@ public class Main {
         }
     }
 
-    // Display the high-score table
+
     private static void displayHighScoreTable() {
         System.out.println("\n--- High Score Table ---");
         Map<String, Integer> stats = loadPlayerStats();

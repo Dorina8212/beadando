@@ -43,7 +43,6 @@ class GameStateTest {
 
     @Test
     void testIsWinningMove() {
-        // Create a winning vertical line for YELLOW
         for (int i = 5; i >= 2; i--) {
             board.dropDisc(0, Disc.YELLOW);
         }
@@ -54,7 +53,6 @@ class GameStateTest {
 
     @Test
     void testGetAIMove() {
-        // Fill column 0 to ensure AI avoids full columns
         for (int i = 0; i < 6; i++) {
             board.dropDisc(0, Disc.RED);
         }

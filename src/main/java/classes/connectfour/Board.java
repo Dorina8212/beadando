@@ -33,10 +33,10 @@ public class Board {
     }
 
     public boolean checkWin(Position position, Disc disc) {
-        return checkLine(position, disc, 0, 1) ||   // Horizontal
-                checkLine(position, disc, 1, 0) ||   // Vertical
-                checkLine(position, disc, 1, 1) ||   // Diagonal \
-                checkLine(position, disc, 1, -1);    // Diagonal /
+        return checkLine(position, disc, 0, 1) ||
+                checkLine(position, disc, 1, 0) ||
+                checkLine(position, disc, 1, 1) ||
+                checkLine(position, disc, 1, -1);
     }
 
     private boolean checkLine(Position start, Disc disc, int rowDir, int colDir) {
