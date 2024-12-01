@@ -31,7 +31,7 @@ public class Main {
 
                 System.out.print("Enter the number of the saved game you want to load: ");
                 int gameNumber = scanner.nextInt();
-                scanner.nextLine(); // Consume newline character
+                scanner.nextLine();
 
                 if (gameNumber >= 1 && gameNumber <= savedGames.length) {
                     String selectedFile = savedGames[gameNumber - 1].getName();
