@@ -85,7 +85,7 @@ public class GameState {
 
     public static GameState loadGameState(String filename) {
         try (Scanner scanner = new Scanner(new File(filename))) {
-            Board board = new Board(6, 7);  // Create an empty board
+            Board board = new Board(6, 7);
 
             int row = 0;
             while (scanner.hasNextLine() && row < 6) {
